@@ -1,11 +1,25 @@
 const express = require('express')
 const router = express.Router()
+const Meal = require('../database/meals')
 
 router.get('/',(req,res,next)=>{
     res.send({
-        message: "router works"
+        message: "list of meals"
     })
 })
+
+router.post('/',(req,res,next)=>{
+   
+    const meal = new Meal({
+        name: req.body.name,
+        price: req.body.price
+    });
+    res.status(201).send({
+        message: "meal item added",
+        createdMeal: meal
+    })
+})
+
 
 router.get('/:mealId', (req,res,next)=>{
     const id = req.params.mealId;

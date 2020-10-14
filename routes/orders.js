@@ -8,8 +8,14 @@ router.get('/', (req,res,next)=>{
 })
 
 router.post('/', (req,res,next)=>{
+    const order = {
+        mealId: req.body.mealId,
+        quantity: req.body.quantity
+    }
     res.status(201).send({
-        message: 'Order created'
+        message: 'Order created',
+        order: order
+
     })
 })
 
