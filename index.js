@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 const mealRouter = require('./routes/meals')
 const orderRouter = require('./routes/orders')
 
-mongoose.connect('localhost:27017/mama-sauce',{ useNewUrlParser: true })
+mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
 .then(()=>{
     console.log('connected to mongodb')
 })

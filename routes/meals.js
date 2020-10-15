@@ -3,9 +3,29 @@ const router = express.Router()
 const Meal = require('../database/meals')
 
 router.get('/',(req,res,next)=>{
-    res.send({
-        message: "list of meals"
-    })
+   Meal.find()
+   .select('name price _id')  //to ensure we dont get _v property.
+   .then(meals => {
+       const details = {
+           mealCounter: meals.length,
+           meals: meals.map(meal=>
+            { return {
+            name: meal.name,
+            price: meal.price,
+            _id: meal._id,
+            request:{
+                type: 'GET',
+                url: 'http://localhost:4000/meals/'+ meal._id
+            }
+           }})
+          
+       }
+       res.status(200).send(details)
+   })
+   .catch(err => {
+       console.log(err)
+       res.status(404).send(err)
+   })
 })
 
 router.post('/',(req,res,next)=>{
@@ -14,37 +34,71 @@ router.post('/',(req,res,next)=>{
         name: req.body.name,
         price: req.body.price
     });
-    res.status(201).send({
-        message: "meal item added",
+    meal.save()
+    .then(()=>{
+        res.status(201).send({
+        message: "new meal added",
         createdMeal: meal
     })
+    })
+    .catch((err)=>{
+        console.log(err)
+        res.status(404).send(err)
+    })
+    
 })
 
 
 router.get('/:mealId', (req,res,next)=>{
     const id = req.params.mealId;
-    if(id === 'special'){ 
-        res.status(200).send({
-            message: 'You discovered the special ID',
-            id: id
-        })
-    } else {
-        res.status(200).send({
-            message: "You passed an ID"
-        })
-    }
+    Meal.findById(id)
+    .then(meal => {
+        console.log(meal)
+        res.status(200).send(meal)
+    })
+    .catch(err => {console.log(err);
+        res.status(500).send(err)
+    })
 })
 
 router.put('/:mealId',(req,res,next)=>{
-    res.send({
-        message: "meal updated"
+    const id = req.params.mealId;
+    Meal.updateOne({_id: id}, {
+        $set:{
+            name: req.body.name,
+            price: req.body.price
+        }
+    })
+    .then(result => {
+        res.status(200).send({
+            message: 'meal updated successfully',
+            meal: result,
+            request: {
+                type: 'GET',
+                url: 'http://localhost:4000/meals/' + id
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(404).send(err)
     })
 })
 
 router.delete('/:mealId',(req,res,next)=>{
-    res.send({
-        message: "meal deleted"
-    })
+    const id = req.params.mealId
+   Meal.findByIdAndDelete(id)
+   .then((meal)=>{
+       console.log("Meal deleted")
+       res.send({
+           message: 'This meal has been deleted successfully',
+           meal: meal
+       })
+   })
+   .catch(err => {
+       console.log(err);
+       res.status(404).send(err)
+   })
 })
 
 
