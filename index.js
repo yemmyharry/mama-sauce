@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 
 const mealRouter = require('./routes/meals')
 const orderRouter = require('./routes/orders')
+const { static } = require("express")
 
 mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
 .then(()=>{
@@ -19,6 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
+app.use('/uploads',express.static('uploads'))
 
 //to prevent cors errors
 app.use((req,res,next)=>{

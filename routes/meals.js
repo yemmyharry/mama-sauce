@@ -1,10 +1,34 @@
 const express = require('express')
 const router = express.Router()
 const Meal = require('../database/meals')
+const mongoose = require('mongoose')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function(req, file, callback){
+        callback(null, './uploads/')
+    },
+    filename: function(req, file, callback){
+        callback(null, file.originalname)
+    }
+})
+
+const fileFilter = (req, file, callback) => {
+    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg'){
+        callback(null, true)
+    }
+    else {
+        callback(null, false)
+    }
+}
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter
+})
 
 router.get('/',(req,res,next)=>{
    Meal.find()
-   .select('name price _id')  //to ensure we dont get _v property.
+   .select('name price _id mealImage')  //to ensure we dont get _v property.
    .then(meals => {
        const details = {
            mealCounter: meals.length,
@@ -12,6 +36,7 @@ router.get('/',(req,res,next)=>{
             { return {
             name: meal.name,
             price: meal.price,
+            mealImage: meal.mealImage,
             _id: meal._id,
             request:{
                 type: 'GET',
@@ -28,17 +53,23 @@ router.get('/',(req,res,next)=>{
    })
 })
 
-router.post('/',(req,res,next)=>{
-   
+router.post('/',upload.single('mealImage'),(req,res,next)=>{
+   console.log(req.file)
     const meal = new Meal({
+        _id: mongoose.Types.ObjectId(),
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
+        mealImage: req.file.path
     });
     meal.save()
     .then(()=>{
         res.status(201).send({
         message: "new meal added",
-        createdMeal: meal
+        createdMeal: meal,
+        request:{
+            type: 'GET',
+            url: 'http://localhost:4000/meals/'+ meal._id
+        }
     })
     })
     .catch((err)=>{
