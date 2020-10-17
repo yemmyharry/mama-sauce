@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const User = require('../database/user')
 
 
@@ -43,6 +44,36 @@ router.post('/signup', (req, res, next)=>{
             }
         )
         
+})
+
+router.post('/login',(req,res,next)=>{
+    User.find({email: req.body.email})
+    .then(user =>{
+        if(user.length < 1){
+            return res.status(401).send({
+                message: "You don't have the required authorisation"
+            })
+        }
+        bcrypt.compare(req.body.password, user[0].password, (err, result)=>{
+            if (err){
+                return res.status(401).send({
+                    message: "You don't have the required authorisation"
+                })
+            }
+            if(result){
+                const token = jwt.sign({
+                    email: user[0].email,
+                    userId: user[0]._id
+                }, 'secret', {
+                    expiresIn: "1h"
+                })
+                return res.status(200).send({
+                    message: 'Authentication successful',
+                    token: token 
+                })
+            }
+        })
+    })
 })
 
 
