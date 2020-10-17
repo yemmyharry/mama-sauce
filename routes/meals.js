@@ -3,6 +3,7 @@ const router = express.Router()
 const Meal = require('../database/meals')
 const mongoose = require('mongoose')
 const multer = require('multer')
+const checkAuth = require('../middleware/check-auth')
 
 const storage = multer.diskStorage({
     destination: function(req, file, callback){
@@ -53,7 +54,7 @@ router.get('/',(req,res,next)=>{
    })
 })
 
-router.post('/',upload.single('mealImage'),(req,res,next)=>{
+router.post('/', checkAuth, upload.single('mealImage'),(req,res,next)=>{
    console.log(req.file)
     const meal = new Meal({
         _id: mongoose.Types.ObjectId(),
@@ -92,7 +93,7 @@ router.get('/:mealId', (req,res,next)=>{
     })
 })
 
-router.put('/:mealId',(req,res,next)=>{
+router.put('/:mealId', checkAuth, (req,res,next)=>{
     const id = req.params.mealId;
     Meal.updateOne({_id: id}, {
         $set:{
@@ -116,7 +117,7 @@ router.put('/:mealId',(req,res,next)=>{
     })
 })
 
-router.delete('/:mealId',(req,res,next)=>{
+router.delete('/:mealId', checkAuth, (req,res,next)=>{
     const id = req.params.mealId
    Meal.findByIdAndDelete(id)
    .then((meal)=>{

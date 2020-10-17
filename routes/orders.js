@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-
+const checkAuth = require('../middleware/check-auth')
 const Order = require('../database/orders')
 const Meal = require('../database/meals')
 
-router.get('/', (req,res,next)=>{
+router.get('/', checkAuth, (req,res,next)=>{
     Order.find()
     .select('mealId quantity _id')
     .populate('mealId', 'name')
@@ -31,7 +31,7 @@ router.get('/', (req,res,next)=>{
    
 })
 
-router.post('/', (req,res,next)=>{
+router.post('/', checkAuth, (req,res,next)=>{
     Meal.findById(req.body.mealId)
     .then( result => {
         if(!result) {
@@ -71,12 +71,7 @@ router.post('/', (req,res,next)=>{
     })
     
 
-  
-   
-   
-
-
-router.get('/:orderId', (req,res,next)=>{
+router.get('/:orderId', checkAuth, (req,res,next)=>{
     Order.findById(req.params.orderId)
     .populate('mealId')
     .then(order => {
@@ -100,7 +95,7 @@ router.get('/:orderId', (req,res,next)=>{
     )
 })
 
-router.delete('/:orderId',(req,res,next)=>{
+router.delete('/:orderId', checkAuth,(req,res,next)=>{
     Order.findByIdAndDelete({_id: req.params.orderId})
     .then(result => {
         res.status(200).send({
