@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 
 const mealRouter = require('./routes/meals')
 const orderRouter = require('./routes/orders')
+const userRouter = require('./routes/user')
 const { static } = require("express")
 
 mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
@@ -35,6 +36,7 @@ app.use((req,res,next)=>{
 
 app.use('/meals', mealRouter)
 app.use('/orders', orderRouter)
+app.use('/user', userRouter)
 
 
 //my error handling
