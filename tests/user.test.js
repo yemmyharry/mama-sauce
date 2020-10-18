@@ -29,16 +29,16 @@ describe('User Signup Test', () => {
         expect(savedUser.password).toBe(userData.password);
     });
 
-    // it('login successfully', async () => {
-    //     const validUser = new User(userData).save();
-    //     const savedUser = await validUser.find();
-    //     // const signedUser = User.find({email: userData.email});
+    it('should login successfully', async () => {
+        // const validUser = User(userData);
         
-    //     // Object Id should be defined when successfully saved to MongoDB.
-    //     // expect(savedUser._id).toBeDefined();
-    //     expect(savedUser.email).toBe(userData.email);
-    //     // expect(savedUser.password).toBe(userData.password);
-    // });
+        const signedUser = User.find({email: userData.email});
+        const savedUser = await signedUser;
+        // Object Id should be defined when successfully saved to MongoDB.
+        // expect(savedUser._id).toBeDefined();
+        expect(savedUser.email).toBe(signedUser.email);
+        // expect(savedUser.password).toBe(userData.password);
+    });
 
    
     
