@@ -30,12 +30,9 @@ describe('User Signup Test', () => {
     });
 
     it('should login successfully', async () => {
-        // const validUser = User(userData);
-        
         const signedUser = User.find({email: userData.email});
         const savedUser = await signedUser;
-        // Object Id should be defined when successfully saved to MongoDB.
-        // expect(savedUser._id).toBeDefined();
+        
         expect(savedUser.email).toBe(signedUser.email);
         // expect(savedUser.password).toBe(userData.password);
     });

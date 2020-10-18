@@ -4,7 +4,7 @@
   "description": "A restful API project for Genesys Tech Hub",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest"
   },
   "author": "Arigbanla Omoyemi",
   "license": "ISC",
