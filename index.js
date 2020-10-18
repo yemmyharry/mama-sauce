@@ -11,7 +11,7 @@ const { static } = require("express")
 
 mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
 .then(()=>{
-    console.log('connected to mongodb')
+    console.log('Connected to mongodb')
 })
 .catch((err)=> {
     return err.message
