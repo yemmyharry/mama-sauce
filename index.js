@@ -9,13 +9,17 @@ const orderRouter = require('./routes/orders')
 const userRouter = require('./routes/user')
 const { static } = require("express")
 
-mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
-.then(()=>{
-    console.log('Connected to mongodb')
-})
-.catch((err)=> {
-    return err.message
-})
+// mongoose.connect('mongodb://localhost:27017/mama-sauce',{ useNewUrlParser: true ,useUnifiedTopology: true })
+// .then(()=>{
+//     console.log('Connected to mongodb')
+// })
+// .catch((err)=> {
+//     return err.message
+// })
+
+ mongoose.connect("mongodb+srv://moosemuffin:immortal@yemmyharry-vgumn.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true ,'useFindAndModify': false, 'useCreateIndex': true, useUnifiedTopology: true})
+    .then(() => 'You are now connected to Mongo!')
+    .catch(err => console.error('Something went wrong', err));
 
 //middlewares
 app.use(morgan('dev'))
